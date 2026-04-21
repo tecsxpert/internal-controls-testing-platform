@@ -1,6 +1,7 @@
 from flask import Flask
 from dotenv import load_dotenv
 from routes.describe import describe_bp
+from routes.recommend import recommend_bp
 import os
 
 load_dotenv()
@@ -9,6 +10,7 @@ app = Flask(__name__)
 
 # Register blueprints
 app.register_blueprint(describe_bp)
+app.register_blueprint(recommend_bp)
 
 @app.route("/health", methods=["GET"])
 def health():
