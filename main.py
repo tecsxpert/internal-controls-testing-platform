@@ -37,4 +37,4 @@ def ai_response(request: AIRequest):
         }
 
     except Exception as e:
-        return {"error": str(e)} //testing
+        return {"error": str(e)}
