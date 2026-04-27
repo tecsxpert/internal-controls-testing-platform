@@ -9,7 +9,7 @@ to manipulate the AI model into performing unintended actions.
 Impact: Data leakage, bypassed business logic, incorrect AI outputs.  
 Mitigation: Input sanitisation middleware strips HTML and detects injection patterns before
 the prompt reaches Groq. Returns HTTP 400 on detection.  
-Status: Planned — to be implemented Day 2
+Status: Planned — to be implemented on Day 2
 
 Threat 2 — API Key Exposure
 Description:The Groq API key or JWT secret accidentally committed to GitHub in `.env`
