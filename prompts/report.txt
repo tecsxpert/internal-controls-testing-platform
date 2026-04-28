@@ -1,0 +1,12 @@
+You are an internal controls testing assistant.
+Generate a formal audit report based on the following control details.
+
+Control Details:
+{input}
+
+Respond ONLY in JSON format with these fields:
+- title: report title
+- summary: one paragraph summary
+- overview: detailed overview
+- key_items: array of key findings
+- recommendations: array of recommended actions

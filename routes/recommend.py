@@ -7,11 +7,11 @@ from services.cache import get_cached_response, set_cached_response
 
 load_dotenv()
 
-generate_report_bp = Blueprint('generate_report', __name__)
+recommend_bp = Blueprint('recommend', __name__)
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-@generate_report_bp.route("/generate-report", methods=["POST"])
-def generate_report():
+@recommend_bp.route("/recommend", methods=["POST"])
+def recommend():
     data = request.get_json()
 
     # Validate input
@@ -24,13 +24,13 @@ def generate_report():
         return jsonify({"error": "input cannot be empty"}), 400
 
     # Check cache first
-    cached = get_cached_response("report:" + input_text)
+    cached = get_cached_response("recommend:" + input_text)
     if cached:
         cached["from_cache"] = True
         return jsonify(cached), 200
 
     # Load prompt template
-    with open("prompts/report.txt", "r") as f:
+    with open("prompts/recommend.txt", "r") as f:
         prompt_template = f.read()
     
     prompt = prompt_template.replace("{input}", input_text)
@@ -40,18 +40,18 @@ def generate_report():
             model="llama-3.3-70b-versatile",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3,
-            max_tokens=1000
+            max_tokens=500
         )
         
         result = response.choices[0].message.content
         
         response_data = {
-            "report": result,
+            "recommendations": result,
             "generated_at": datetime.utcnow().isoformat()
         }
 
         # Save to cache
-        set_cached_response("report:" + input_text, response_data)
+        set_cached_response("recommend:" + input_text, response_data)
         
         return jsonify(response_data), 200
 
