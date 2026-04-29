@@ -1,0 +1,40 @@
+# Environment variables - NEVER commit this
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+
+# Node / React
+node_modules/
+dist/
+build/
+.npm
+
+# ChromaDB
+chroma_data/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
