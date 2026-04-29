@@ -1,40 +1,23 @@
-# Environment variables - NEVER commit this
-.env
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-venv/
-.venv/
-*.egg-info/
-dist/
-build/
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 
-# Java / Maven
-target/
-*.class
-*.jar
-*.war
+# testing
+/coverage
 
-# Node / React
-node_modules/
-dist/
-build/
-.npm
+# production
+/build
 
-# ChromaDB
-chroma_data/
-
-# IDE
-.idea/
-.vscode/
-*.iml
-
-# OS
+# misc
 .DS_Store
-Thumbs.db
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Logs
-*.log
-logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
