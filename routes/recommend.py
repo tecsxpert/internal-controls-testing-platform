@@ -3,7 +3,6 @@ from datetime import datetime
 import os
 from groq import Groq
 from dotenv import load_dotenv
-from services.cache import get_cached_response, set_cached_response
 
 load_dotenv()
 
@@ -23,12 +22,6 @@ def recommend():
     if not input_text:
         return jsonify({"error": "input cannot be empty"}), 400
 
-    # Check cache first
-    cached = get_cached_response("recommend:" + input_text)
-    if cached:
-        cached["from_cache"] = True
-        return jsonify(cached), 200
-
     # Load prompt template
     with open("prompts/recommend.txt", "r") as f:
         prompt_template = f.read()
@@ -45,15 +38,10 @@ def recommend():
         
         result = response.choices[0].message.content
         
-        response_data = {
+        return jsonify({
             "recommendations": result,
             "generated_at": datetime.utcnow().isoformat()
-        }
-
-        # Save to cache
-        set_cached_response("recommend:" + input_text, response_data)
-        
-        return jsonify(response_data), 200
+        }), 200
 
     except Exception as e:
         return jsonify({
