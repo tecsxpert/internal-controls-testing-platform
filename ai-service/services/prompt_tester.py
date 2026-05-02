@@ -3,7 +3,8 @@ import json
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from groq_client import GroqClient
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from services.groq_client import GroqClient
 
 client = GroqClient()
 
@@ -13,12 +14,11 @@ def load_prompt(filename):
         return f.read()
 
 def score_response(response: dict) -> int:
-    """Score response from 1-10"""
     if response.get('is_fallback'):
         return 0
     data = response.get('data', {})
     if 'text' in data and not any(k in data for k in ['description', 'recommendations', 'title']):
-        return 4  # Plain text instead of JSON
+        return 4
     return 9
 
 def test_describe():
@@ -29,16 +29,16 @@ def test_describe():
     system_prompt = load_prompt('describe.txt')
 
     inputs = [
-        "Segregation of duties in accounts payable",
-        "Monthly bank reconciliation process",
-        "Access control review for ERP system",
-        "Invoice approval workflow",
-        "Inventory count verification process",
-        "Payroll processing controls",
-        "Vendor master data change controls",
-        "Journal entry approval controls",
-        "Fixed asset addition controls",
-        "Password policy enforcement control"
+        "Three-way matching control for purchase orders",
+        "Expense reimbursement approval process",
+        "Monthly financial close checklist",
+        "User provisioning and deprovisioning control",
+        "Physical security access control for server room",
+        "Whistleblower policy and reporting mechanism",
+        "Tax compliance review control",
+        "Customer refund approval workflow",
+        "Budget variance analysis control",
+        "Contract review and approval process"
     ]
 
     scores = []
@@ -51,7 +51,7 @@ def test_describe():
         print(f"Response: {json.dumps(result.get('data', {}), indent=2)[:200]}...")
 
     avg = sum(scores) / len(scores)
-    print(f"\n✅ Average score: {avg:.1f}/10")
+    print(f"\nAverage score: {avg:.1f}/10")
     return avg
 
 def test_recommend():
@@ -62,16 +62,16 @@ def test_recommend():
     system_prompt = load_prompt('recommend.txt')
 
     inputs = [
-        "No segregation of duties in accounts payable",
-        "Bank reconciliations are performed late every month",
-        "ERP system access not reviewed in 12 months",
-        "Invoices approved without proper documentation",
-        "Inventory counts show recurring variances",
-        "Payroll processed without dual approval",
-        "Vendor changes made without authorization",
-        "Journal entries posted without review",
-        "Fixed assets not tagged or tracked properly",
-        "Weak password policy with no expiry"
+        "Expense reports submitted without receipts",
+        "Financial close process taking more than 10 days",
+        "Terminated employees still have system access",
+        "Server room accessible to all staff",
+        "No whistleblower policy in place",
+        "Tax filings submitted late repeatedly",
+        "Customer refunds processed without approval",
+        "Budget variances not investigated or explained",
+        "Contracts signed without legal review",
+        "Purchase orders raised after goods received"
     ]
 
     scores = []
@@ -84,7 +84,7 @@ def test_recommend():
         print(f"Response: {json.dumps(result.get('data', {}), indent=2)[:200]}...")
 
     avg = sum(scores) / len(scores)
-    print(f"\n✅ Average score: {avg:.1f}/10")
+    print(f"\nAverage score: {avg:.1f}/10")
     return avg
 
 def test_generate_report():
@@ -92,19 +92,19 @@ def test_generate_report():
     print("TESTING /generate-report PROMPT — 10 inputs")
     print("="*50)
 
-    system_prompt = load_prompt('generate_report.txt')
+    system_prompt = load_prompt('report.txt')
 
     inputs = [
-        "Accounts payable department with weak segregation of duties",
-        "IT department with outdated access controls",
-        "Payroll processing with missing dual approvals",
-        "Inventory management with recurring count variances",
-        "Financial reporting with delayed reconciliations",
-        "Procurement with unauthorized vendor changes",
-        "Fixed assets with poor tracking and tagging",
-        "Journal entries with no supervisory review",
-        "Cash handling with no independent verification",
-        "ERP system with excessive user access privileges"
+        "HR department with poor onboarding controls",
+        "Legal department with no contract review process",
+        "Finance department with delayed month end close",
+        "IT department with poor user access management",
+        "Sales department with no refund approval process",
+        "Tax department with recurring late filings",
+        "Procurement with no three-way matching",
+        "Operations with no physical security controls",
+        "Compliance department with no whistleblower policy",
+        "Treasury with no cash flow forecasting controls"
     ]
 
     scores = []
@@ -117,7 +117,7 @@ def test_generate_report():
         print(f"Response: {json.dumps(result.get('data', {}), indent=2)[:200]}...")
 
     avg = sum(scores) / len(scores)
-    print(f"\n✅ Average score: {avg:.1f}/10")
+    print(f"\n Average score: {avg:.1f}/10")
     return avg
 
 
@@ -135,6 +135,6 @@ if __name__ == "__main__":
     overall = (avg1 + avg2 + avg3) / 3
     print(f"Overall average:         {overall:.1f}/10")
     if overall >= 7:
-        print("✅ All prompts pass the 7/10 threshold!")
+        print("All prompts pass the 7/10 threshold!")
     else:
-        print("❌ Some prompts need rewriting!")
+        print("Some prompts need rewriting!")
