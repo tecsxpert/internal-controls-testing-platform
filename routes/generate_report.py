@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify
 from datetime import datetime
 import os
+import time
 from groq import Groq
 from dotenv import load_dotenv
-from services.cache import get_cached_response, set_cached_response
+from services.cache import get_cached_response, set_cached_response, record_response_time
 
 load_dotenv()
 
@@ -35,6 +36,8 @@ def generate_report():
     
     prompt = prompt_template.replace("{input}", input_text)
 
+    start_time = time.time()
+
     try:
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
@@ -43,21 +46,31 @@ def generate_report():
             max_tokens=1000
         )
         
+        duration = time.time() - start_time
+        record_response_time(duration)
+        
         result = response.choices[0].message.content
         
         response_data = {
             "report": result,
-            "generated_at": datetime.utcnow().isoformat()
+            "generated_at": datetime.utcnow().isoformat(),
+            "response_time_seconds": round(duration, 3)
         }
 
-        # Save to cache
         set_cached_response("report:" + input_text, response_data)
         
         return jsonify(response_data), 200
 
     except Exception as e:
         return jsonify({
-            "error": "AI service failed",
+            "error": "AI service temporarily unavailable",
             "is_fallback": True,
+            "report": {
+                "title": "Report Unavailable",
+                "summary": "Unable to generate report at this time.",
+                "overview": "AI service is temporarily unavailable.",
+                "key_items": [],
+                "recommendations": []
+            },
             "generated_at": datetime.utcnow().isoformat()
         }), 500

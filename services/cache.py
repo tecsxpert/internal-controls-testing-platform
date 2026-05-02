@@ -1,6 +1,7 @@
 import redis
 import hashlib
 import json
+import time
 
 # Connect to Redis
 try:
@@ -10,6 +11,19 @@ try:
 except:
     redis_client = None
     redis_available = False
+
+# Track response times
+response_times = []
+
+def record_response_time(duration):
+    response_times.append(duration)
+    if len(response_times) > 100:
+        response_times.pop(0)
+
+def get_avg_response_time():
+    if not response_times:
+        return 0
+    return round(sum(response_times) / len(response_times), 3)
 
 def get_cache_key(input_text):
     return hashlib.sha256(input_text.encode()).hexdigest()
@@ -31,6 +45,6 @@ def set_cached_response(input_text, response):
         return
     try:
         key = get_cache_key(input_text)
-        redis_client.setex(key, 900, json.dumps(response))  # 900 seconds = 15 min TTL
+        redis_client.setex(key, 900, json.dumps(response))
     except:
         pass
