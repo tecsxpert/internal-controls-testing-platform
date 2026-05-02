@@ -10,6 +10,13 @@ load_dotenv()
 
 app = Flask(__name__)
 
+# Pre-load sentence-transformers at startup
+print("Loading sentence-transformers model...")
+from sentence_transformers import SentenceTransformer
+sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
+print("sentence-transformers model loaded successfully!")
+
+# Register blueprints
 app.register_blueprint(describe_bp)
 app.register_blueprint(recommend_bp)
 app.register_blueprint(generate_report_bp)
