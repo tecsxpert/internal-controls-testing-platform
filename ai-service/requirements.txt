@@ -1,5 +1,0 @@
-groq
-flask
-flask-limiter
-python-dotenv
-bleach
